@@ -58,8 +58,17 @@ app.post('/register', (req, res) => {
 })
 
 app.get('/users', (req, res) => {
-    console.log(req.cookies.test)
-    console.log(req.cookies.test)
+    const id =  req.cookies["user-id"]
+    if (!id) {
+        return res.send("login해주세요")
+    }
+    const user = users.find(user => user.id ===id)
+    if (!user) {
+        return res.send("회원정보를 오류")
+    }
+
+    // console.log(req.cookies.test)
+    // console.log(req.cookies.test)
     res.send('users api page')
 })
 
