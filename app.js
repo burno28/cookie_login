@@ -18,27 +18,43 @@ const users = [
 app.post('/login', (req, res) => {
     const id = req.body.id
     const password = req.body.password
-    const user = users.find(user => user, id === id && user.password === password)
+    const user = users.find(user => user.id === id)
 
     if (!user) {
         return res.send('who are you?')
     }
-    console.log("header", 'user_id = ${user.id}')
-    res.writehead(200, {
-        "Set-cookie": ['user_id = ${user.id}']
-    })
+    // console.log("header", 'user_id = ${user.id}')
+    // res.writehead(200, {
+    //     "Set-cookie": ['user_id = ${user.id}']
+    // })
 
-    res.send('login api page')
+    if (user.password !== password) {
+        return res.send("plz check your password")
+    }
+
+    res.cookie('user-id', user.id)
+    res.send('login')
 })
 
 app.post('/logout', (req, res) => {
 
-    res.send('login api page')
+    res.clearCookie("user-id")
+    res.send('logout')
 })
 
 app.post('/register', (req, res) => {
+    const id = req.query.id
+    const password = req.query.password
+    const name = req.query.name
 
-    res.send('register api page')
+    const user = users.find(users => user.id === id)
+    if (user) {
+        return res.send("중복 아이디 입니다")
+    }
+
+    users.push({id, password, name})
+    console.log(users)
+    res.send('회원가입')
 })
 
 app.get('/users', (req, res) => {
